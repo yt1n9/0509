@@ -48,7 +48,25 @@ function draw() {
           noStroke();
           circle(keypoint.x, keypoint.y, 16);
         }
+
+        // Draw lines connecting keypoints in groups
+        drawLines(hand, [0, 1, 2, 3, 4]);  // Thumb
+        drawLines(hand, [5, 6, 7, 8]);    // Index finger
+        drawLines(hand, [9, 10, 11, 12]); // Middle finger
+        drawLines(hand, [13, 14, 15, 16]); // Ring finger
+        drawLines(hand, [17, 18, 19, 20]); // Pinky finger
       }
     }
+  }
+}
+
+// Function to draw lines connecting keypoints in a group
+function drawLines(hand, indices) {
+  for (let i = 0; i < indices.length - 1; i++) {
+    let kp1 = hand.keypoints[indices[i]];
+    let kp2 = hand.keypoints[indices[i + 1]];
+    stroke(0, 255, 0); // Green lines
+    strokeWeight(2);
+    line(kp1.x, kp1.y, kp2.x, kp2.y);
   }
 }

@@ -59,6 +59,13 @@ function draw() {
     let dragging = false; // 用於檢查是否有手指正在拖動圓
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
+        // 繪製手指的連線
+        drawLines(hand, [0, 1, 2, 3, 4]);  // 拇指
+        drawLines(hand, [5, 6, 7, 8]);    // 食指
+        drawLines(hand, [9, 10, 11, 12]); // 中指
+        drawLines(hand, [13, 14, 15, 16]); // 無名指
+        drawLines(hand, [17, 18, 19, 20]); // 小指
+
         // 檢查食指與大拇指是否同時碰觸圓
         let indexFinger = hand.keypoints[8]; // 食指的關鍵點
         let thumb = hand.keypoints[4]; // 大拇指的關鍵點
@@ -91,8 +98,16 @@ function drawLines(hand, indices) {
   for (let i = 0; i < indices.length - 1; i++) {
     let kp1 = hand.keypoints[indices[i]];
     let kp2 = hand.keypoints[indices[i + 1]];
+
+    // 將座標轉換為畫布的座標
+    let kp1X = kp1.x * width / video.width;
+    let kp1Y = kp1.y * height / video.height;
+    let kp2X = kp2.x * width / video.width;
+    let kp2Y = kp2.y * height / video.height;
+
+    // 繪製連線
     stroke(0, 255, 0); // 綠色線條
     strokeWeight(2);
-    line(kp1.x, kp1.y, kp2.x, kp2.y);
+    line(kp1X, kp1Y, kp2X, kp2Y);
   }
 }

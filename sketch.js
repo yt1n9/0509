@@ -67,13 +67,16 @@ function draw() {
         drawLines(hand, [13, 14, 15, 16]); // 無名指
         drawLines(hand, [17, 18, 19, 20]); // 小指
 
-        // 檢查食指是否碰觸圓
+        // 檢查食指與大拇指是否同時碰觸圓
         let indexFinger = hand.keypoints[8]; // 食指的關鍵點
-        let d = dist(indexFinger.x, indexFinger.y, circleX, circleY);
-        if (d < circleRadius) {
-          // 如果碰觸圓，讓圓跟隨食指移動
-          circleX = indexFinger.x;
-          circleY = indexFinger.y;
+        let thumb = hand.keypoints[4]; // 大拇指的關鍵點
+        let dIndex = dist(indexFinger.x, indexFinger.y, circleX, circleY);
+        let dThumb = dist(thumb.x, thumb.y, circleX, circleY);
+
+        if (dIndex < circleRadius && dThumb < circleRadius) {
+          // 如果食指與大拇指同時碰觸圓，讓圓跟隨手指移動
+          circleX = (indexFinger.x + thumb.x) / 2; // 圓心移動到兩指的中點
+          circleY = (indexFinger.y + thumb.y) / 2;
         }
       }
     }

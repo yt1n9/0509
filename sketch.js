@@ -59,28 +59,6 @@ function draw() {
     let dragging = false; // 用於檢查是否有手指正在拖動圓
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
-        // 繪製手部關鍵點
-        for (let i = 0; i < hand.keypoints.length; i++) {
-          let keypoint = hand.keypoints[i];
-
-          // 根據左右手設定顏色
-          if (hand.handedness == "Left") {
-            fill(255, 0, 255);
-          } else {
-            fill(255, 255, 0);
-          }
-
-          noStroke();
-          circle(keypoint.x, keypoint.y, 16);
-        }
-
-        // 繪製手指的連線
-        drawLines(hand, [0, 1, 2, 3, 4]);  // 拇指
-        drawLines(hand, [5, 6, 7, 8]);    // 食指
-        drawLines(hand, [9, 10, 11, 12]); // 中指
-        drawLines(hand, [13, 14, 15, 16]); // 無名指
-        drawLines(hand, [17, 18, 19, 20]); // 小指
-
         // 檢查食指與大拇指是否同時碰觸圓
         let indexFinger = hand.keypoints[8]; // 食指的關鍵點
         let thumb = hand.keypoints[4]; // 大拇指的關鍵點

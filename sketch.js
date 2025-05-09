@@ -4,6 +4,8 @@
 let video;
 let handPose;
 let hands = [];
+let circleX, circleY; // 圓的初始位置
+const circleRadius = 50; // 圓的半徑
 
 function preload() {
   // Initialize HandPose model with flipped video input
@@ -25,20 +27,29 @@ function setup() {
 
   // Start detecting hands
   handPose.detectStart(video, gotHands);
+
+  // 初始化圓的位置在視窗中間
+  circleX = width / 2;
+  circleY = height / 2;
 }
 
 function draw() {
   image(video, 0, 0);
 
-  // Ensure at least one hand is detected
+  // 繪製圓
+  fill(0, 0, 255, 150); // 半透明藍色
+  noStroke();
+  circle(circleX, circleY, circleRadius * 2);
+
+  // 確保至少檢測到一隻手
   if (hands.length > 0) {
     for (let hand of hands) {
       if (hand.confidence > 0.1) {
-        // Loop through keypoints and draw circles
+        // 繪製手部關鍵點
         for (let i = 0; i < hand.keypoints.length; i++) {
           let keypoint = hand.keypoints[i];
 
-          // Color-code based on left or right hand
+          // 根據左右手設定顏色
           if (hand.handedness == "Left") {
             fill(255, 0, 255);
           } else {
@@ -49,12 +60,21 @@ function draw() {
           circle(keypoint.x, keypoint.y, 16);
         }
 
-        // Draw lines connecting keypoints in groups
-        drawLines(hand, [0, 1, 2, 3, 4]);  // Thumb
-        drawLines(hand, [5, 6, 7, 8]);    // Index finger
-        drawLines(hand, [9, 10, 11, 12]); // Middle finger
-        drawLines(hand, [13, 14, 15, 16]); // Ring finger
-        drawLines(hand, [17, 18, 19, 20]); // Pinky finger
+        // 繪製手指的連線
+        drawLines(hand, [0, 1, 2, 3, 4]);  // 拇指
+        drawLines(hand, [5, 6, 7, 8]);    // 食指
+        drawLines(hand, [9, 10, 11, 12]); // 中指
+        drawLines(hand, [13, 14, 15, 16]); // 無名指
+        drawLines(hand, [17, 18, 19, 20]); // 小指
+
+        // 檢查食指是否碰觸圓
+        let indexFinger = hand.keypoints[8]; // 食指的關鍵點
+        let d = dist(indexFinger.x, indexFinger.y, circleX, circleY);
+        if (d < circleRadius) {
+          // 如果碰觸圓，讓圓跟隨食指移動
+          circleX = indexFinger.x;
+          circleY = indexFinger.y;
+        }
       }
     }
   }
@@ -65,7 +85,7 @@ function drawLines(hand, indices) {
   for (let i = 0; i < indices.length - 1; i++) {
     let kp1 = hand.keypoints[indices[i]];
     let kp2 = hand.keypoints[indices[i + 1]];
-    stroke(0, 255, 0); // Green lines
+    stroke(0, 255, 0); // 綠色線條
     strokeWeight(2);
     line(kp1.x, kp1.y, kp2.x, kp2.y);
   }
